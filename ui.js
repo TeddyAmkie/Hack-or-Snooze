@@ -19,6 +19,11 @@ $(async function () {
 
   await checkIfLoggedIn();
 
+
+  /***********************************************************************************/
+  /********************************* EVENT LISTENERS *********************************/
+  /***********************************************************************************/
+
   /**
    * Event listener for logging in.
    *  If successfully we will setup the user instance
@@ -84,14 +89,12 @@ $(async function () {
 
 
   //Event Handler for Clicking Submit
-
   $navSubmitStory.on("click", function () {
     //Show story submission form
     $submitForm.slideToggle();
   })
 
   // Event Handler for story form submission
-
   $submitForm.on("submit", async function (evt) {
     evt.preventDefault(); // no page-refresh on submit
 
@@ -120,12 +123,11 @@ $(async function () {
     let storyID = evt.target.closest("li").id;
 
     if (!isFavoriteStory(storyID)) {
-      currentUser.favoriteStory(currentUser, storyID);
+      currentUser.favoriteStory(storyID);
     }
-    else if (isFavoriteStory(storyID)) {
-      currentUser.unfavoriteStory(currentUser, storyID);
+    else {
+      currentUser.unfavoriteStory(storyID);
     }
-
     //change icon
     $(this).toggleClass("fas far");
   });
@@ -140,6 +142,11 @@ $(async function () {
     await generateStories();
     $allStoriesList.show();
   });
+
+
+  /***********************************************************************************/
+  /*************************** LOG-INS AND AUTHENTICATION ****************************/
+  /***********************************************************************************/
 
   /**
    * On page load, checks local storage to see if the user is already logged in.
@@ -182,6 +189,11 @@ $(async function () {
     showNavForLoggedInUser();
   }
 
+
+  /***********************************************************************************/
+  /************************************* STORIES *************************************/
+  /***********************************************************************************/
+
   /**
    * A rendering function to call the StoryList.getStories static method,
    *  which will generate a storyListInstance. Then render it.
@@ -213,7 +225,7 @@ $(async function () {
     for (let story of currentUser.favorites) {
       let storyHTML = generateStoryHTML(story);
 
-      //fills in stars
+      //change all empty stars to full for favorite stories list
       $(storyHTML).find("i").toggleClass("fas far");
 
       $allStoriesList.append(storyHTML);
@@ -222,15 +234,15 @@ $(async function () {
 
 
   //helper function for generateStories, returns true if input matches ID in currentUser.favorites
-  function isFavoriteStory(storyID) {
-    let favoriteIDs = [];
-    let favoriteStories = currentUser.favorites;
-    for (let story of favoriteStories) {
-      favoriteIDs.push(story.storyId);
-    }
 
-    return favoriteIDs.includes(storyID);
-  }
+function isFavoriteStory(storyID) {
+  let favoriteStories = currentUser.favorites;
+  return favoriteStories.some(function(story) {
+    return (story.storyId === storyID);
+  });
+}
+
+
   /**
    * A function to render HTML for an individual Story instance
    */
@@ -253,6 +265,10 @@ $(async function () {
 
     return storyMarkup;
   }
+
+  /***********************************************************************************/
+  /******************************** HELPER FUNCTIONS *********************************/
+  /***********************************************************************************/
 
   /* hide all elements in elementsArr */
 
