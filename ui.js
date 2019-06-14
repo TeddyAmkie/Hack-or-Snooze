@@ -234,14 +234,10 @@ $(async function () {
 
 
   //helper function for generateStories, returns true if input matches ID in currentUser.favorites
-
-function isFavoriteStory(storyID) {
-  let favoriteStories = currentUser.favorites;
-  return favoriteStories.some(function(story) {
-    return (story.storyId === storyID);
-  });
-}
-
+  function isFavoriteStory(storyID) {
+    let favoriteStories = currentUser.favorites;
+    return favoriteStories.some(story => story.storyId === storyID);
+  }
 
   /**
    * A function to render HTML for an individual Story instance
