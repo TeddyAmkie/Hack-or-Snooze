@@ -116,21 +116,20 @@ $(async function () {
 
   //adds event Handler for clicking stars
   //favorites or unfavorites story accordingly
-  function addFavButtonClick() {
-    $(".fav-button").on("click", function (evt) {
-      let storyID = evt.target.closest("li").id;
+  $(".articles-container").on("click", ".fav-button", function (evt) {
+    let storyID = evt.target.closest("li").id;
 
-      if (!isFavoriteStory(storyID)) {
-        currentUser.favoriteStory(currentUser, storyID);
-      }
-      else if (isFavoriteStory(storyID)) {
-        currentUser.unfavoriteStory(currentUser, storyID);
-      }
+    if (!isFavoriteStory(storyID)) {
+      currentUser.favoriteStory(currentUser, storyID);
+    }
+    else if (isFavoriteStory(storyID)) {
+      currentUser.unfavoriteStory(currentUser, storyID);
+    }
 
-      //change icon
-      $(this).toggleClass("fas far");
-    });
-  }
+    //change icon
+    $(this).toggleClass("fas far");
+  });
+
 
   /**
    * Event handler for Navigation to Homepage
@@ -206,7 +205,6 @@ $(async function () {
 
       $allStoriesList.append(result);
     }
-    addFavButtonClick();
   }
 
   //Accesses local current user favorites to replace $allStoriesList
@@ -220,7 +218,6 @@ $(async function () {
 
       $allStoriesList.append(storyHTML);
     }
-    addFavButtonClick();
   }
 
 
