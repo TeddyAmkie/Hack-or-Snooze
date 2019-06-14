@@ -5,11 +5,11 @@ $(async function () {
   const $filteredArticles = $("#filtered-articles");
   const $loginForm = $("#login-form");
   const $createAccountForm = $("#create-account-form");
-  const $ownStories = $("#my-articles");
   const $navLogin = $("#nav-login");
   const $navLogOut = $("#nav-logout");
   const $navSubmitStory = $("#nav-submit-story");
-  const $navOpenFavorites = $("#nav-open-favorites")
+  const $navOpenFavorites = $("#nav-open-favorites");
+  const $navUserStories = $("#nav-user-stories");
 
   // global storyList variable
   let storyList = null;
@@ -117,6 +117,22 @@ $(async function () {
     $allStoriesList.show();
   });
 
+  //Event Handler for User Stories
+  $navUserStories.on("click", async function () {
+    hideElements();
+    generateUserStories();
+    $allStoriesList.show();
+  })
+
+  //Event Handler for trash can
+  //Deletes stories from My Stories
+
+  $(".articles-container").on("click",".delete-button", function(evt) {
+    let storyID = evt.target.closest("li").id;
+    currentUser.deleteStory(storyID);
+    $(`#${storyID}`).remove();
+  })
+
   //adds event Handler for clicking stars
   //favorites or unfavorites story accordingly
   $(".articles-container").on("click", ".fav-button", function (evt) {
@@ -219,7 +235,7 @@ $(async function () {
     }
   }
 
-  //Accesses local current user favorites to replace $allStoriesList
+  //Accesses current user favorites to replace $allStoriesList
   function generateFavStories() {
     $allStoriesList.empty()
     for (let story of currentUser.favorites) {
@@ -232,12 +248,17 @@ $(async function () {
     }
   }
 
-
-  //helper function for generateStories, returns true if input matches ID in currentUser.favorites
-  function isFavoriteStory(storyID) {
-    let favoriteStories = currentUser.favorites;
-    return favoriteStories.some(story => story.storyId === storyID);
+  // Access current user's stories to replace $allStoriesList
+  function generateUserStories() {
+    $allStoriesList.empty();
+    for (let story of currentUser.ownStories) {
+      let storyHTML = generateStoryHTML(story);
+      storyHTML.prepend("<i class='fas fa-trash-alt delete-button'></i>")
+      $allStoriesList.prepend(storyHTML);
+    }
   }
+
+
 
   /**
    * A function to render HTML for an individual Story instance
@@ -266,6 +287,12 @@ $(async function () {
   /******************************** HELPER FUNCTIONS *********************************/
   /***********************************************************************************/
 
+  //helper function for generateStories, returns true if input matches ID in currentUser.favorites
+  function isFavoriteStory(storyID) {
+    let favoriteStories = currentUser.favorites;
+    return favoriteStories.some(story => story.storyId === storyID);
+  }
+
   /* hide all elements in elementsArr */
 
   function hideElements() {
@@ -273,7 +300,6 @@ $(async function () {
       $submitForm,
       $allStoriesList,
       $filteredArticles,
-      $ownStories,
       $loginForm,
       $createAccountForm
     ];
@@ -285,6 +311,7 @@ $(async function () {
     $navLogOut.show();
     $navSubmitStory.show();
     $navOpenFavorites.show();
+    $navUserStories.show();
   }
 
   /* simple function to pull the hostname from a URL */

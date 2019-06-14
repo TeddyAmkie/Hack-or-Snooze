@@ -48,6 +48,8 @@ class StoryList {
       token: user.loginToken,
       story: newStory
     });
+    console.log(response.data);
+    user.ownStories.push(response.data.story);
     return response.data;
   }
 }
@@ -156,7 +158,7 @@ class User {
     return existingUser;
   }
 
-  //Accepts user and story ID and sends post request to add story to user favorites
+  //Accepts story ID and sends post request to add story to user favorites
   async favoriteStory(storyID) {
     let response = await axios.post(`${BASE_URL}/users/${this.username}/favorites/${storyID}`, {
       token: this.loginToken
@@ -167,7 +169,7 @@ class User {
     return;
   }
 
-  //Accepts user and story ID and sends delete request to remove story from user favorites
+  //Accepts story ID and sends delete request to remove story from user favorites
   async unfavoriteStory(storyID) {
     let response = await axios.delete(`${BASE_URL}/users/${this.username}/favorites/${storyID}`, {
       data: {
@@ -179,6 +181,21 @@ class User {
     return;
   };
 
+  //Accepts story ID and sends delete request to remove story from user's stories
+  async deleteStory(storyID) {
+    let response = await axios.delete(`${BASE_URL}/stories/${storyID}`, {
+      data: {
+        token: this.loginToken
+      }
+    });
+    //sync local stories to server
+    console.log(response.data.story);
+    //delete story returned in response from currentUser.ownStories
+    this.ownStories.splice(this.ownStories.findIndex(function(story) {
+      story.storyId === response.data.story.storyId;
+    }),1);
+    return;
+  }
 }
 
 /**
