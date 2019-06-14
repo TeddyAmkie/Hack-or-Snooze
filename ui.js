@@ -107,7 +107,12 @@ $(async function () {
     // Reset Form and update DOM
     $("#submit-form").trigger("reset");
     $submitForm.slideToggle();
-    $allStoriesList.prepend(generateStoryHTML(newStory.story));
+    let newStoryHTML = generateStoryHTML(newStory.story);
+
+    // Adds delete icon to submitted story
+    newStoryHTML.prepend("<i class='fas fa-trash-alt delete-button'></i>");
+    // Adds story to list
+    $allStoriesList.prepend(newStoryHTML);
   });
 
   //Event Handler for Favorites Button
@@ -127,7 +132,7 @@ $(async function () {
   //Event Handler for trash can
   //Deletes stories from My Stories
 
-  $(".articles-container").on("click",".delete-button", function(evt) {
+  $(".articles-container").on("click", ".delete-button", function (evt) {
     let storyID = evt.target.closest("li").id;
     currentUser.deleteStory(storyID);
     $(`#${storyID}`).remove();
@@ -230,9 +235,18 @@ $(async function () {
       if (isFavoriteStory(story.storyId)) {
         $(result).find("i").toggleClass("fas far");
       }
+      //if story is owned, add trashcan
+      if (isOwnedStory(story.storyId)) {
+        $(result).prepend("<i class='fas fa-trash-alt delete-button'></i>");
+      }
 
       $allStoriesList.append(result);
     }
+  }
+
+  //Returns true if input storyID is contained in user's owned stories
+  function isOwnedStory(storyID){
+    return currentUser.ownStories.some(story => story.storyId === storyID);
   }
 
   //Accesses current user favorites to replace $allStoriesList
@@ -243,6 +257,10 @@ $(async function () {
 
       //change all empty stars to full for favorite stories list
       $(storyHTML).find("i").toggleClass("fas far");
+      //Adds delete button if user owned story
+      if(isOwnedStory(story.storyId)){
+        storyHTML.prepend("<i class='fas fa-trash-alt delete-button'></i>")
+      }
 
       $allStoriesList.append(storyHTML);
     }
@@ -254,6 +272,10 @@ $(async function () {
     for (let story of currentUser.ownStories) {
       let storyHTML = generateStoryHTML(story);
       storyHTML.prepend("<i class='fas fa-trash-alt delete-button'></i>")
+      
+      if(isFavoriteStory(story.storyId)){
+        $(storyHTML).find(".fav-button").toggleClass("fas far");
+      }
       $allStoriesList.prepend(storyHTML);
     }
   }

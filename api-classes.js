@@ -40,7 +40,7 @@ class StoryList {
    * - user - the current instance of User who will post the story
    * - newStory - a new story object for the API with title, author, and url
    *
-   * Returns the new story object
+   * Updates local user owned stories and returns the new story object
    */
 
   async addStory(user, newStory) {
@@ -48,7 +48,6 @@ class StoryList {
       token: user.loginToken,
       story: newStory
     });
-    console.log(response.data);
     user.ownStories.push(response.data.story);
     return response.data;
   }
@@ -188,10 +187,11 @@ class User {
         token: this.loginToken
       }
     });
-    //sync local stories to server
-    console.log(response.data.story);
-    //delete story returned in response from currentUser.ownStories
-    this.ownStories.splice(this.ownStories.findIndex(function(story) {
+
+    //sync local stories to server by
+    //deleting story returned in response from currentUser.ownStories
+    this.ownStories.splice(
+      this.ownStories.findIndex(function(story) {
       story.storyId === response.data.story.storyId;
     }),1);
     return;
