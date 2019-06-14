@@ -156,28 +156,24 @@ class User {
     return existingUser;
   }
 
-  //Accepts a story ID and sends post request to add story to user favorites
+  //Accepts user and story ID and sends post request to add story to user favorites
   async favoriteStory(user, storyID) {
     let response = await axios.post(`${BASE_URL}/users/${user.username}/favorites/${storyID}`, {
       token: user.loginToken
     });
     // console.log("favorites are " + JSON.stringify(user.favorites));
-    // console.log(response.data);
     user.favorites = response.data.user.favorites;
-    // console.log(user.favorites);
     return response.data;
   }
 
-  async unfavoriteStory(user, storyID){
+  //Accepts user and story ID and sends delete request to remove story from user favorites
+  async unfavoriteStory(user, storyID) {
     let response = await axios.delete(`${BASE_URL}/users/${user.username}/favorites/${storyID}`, {
-      data:{
+      data: {
         token: user.loginToken
       }
     });
-    // console.log("favorites are " + JSON.stringify(user.favorites));
-    // console.log(response.data);
     user.favorites = response.data.user.favorites;
-    // console.log(user.favorites);
     return response.data;
   };
 

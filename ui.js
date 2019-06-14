@@ -30,7 +30,7 @@ $(async function () {
     // grab the username and password
     const username = $("#login-username").val();
     const password = $("#login-password").val();
-  
+
 
     // call the login static method to build a user instance
     const userInstance = await User.login(username, password);
@@ -98,7 +98,7 @@ $(async function () {
     let author = $("#author").val();
     let title = $("#title").val();
     let url = $("#url").val();
-    let newStoryObject = {author, title, url};
+    let newStoryObject = { author, title, url };
 
     const newStory = await storyList.addStory(currentUser, newStoryObject);
     // Reset Form and update DOM
@@ -108,24 +108,29 @@ $(async function () {
   });
 
   //Event Handler for Favorites Button
-  $navOpenFavorites.on("click", async function(){
-  // hide list of all stories
-  // iterate over favorites Array
-  // call api to get story objects
-  // append stories to list
+  $navOpenFavorites.on("click", async function () {
+    hideElements();
+    generateFavStories();
+    $allStoriesList.show();
   });
 
-  //Event Handler for clicking Stars
-  $(".fav-button").on("click", function(evt){
-    let storyID = evt.target.closest("li").id;
-    if (!isFavoriteStory(storyID)){
-      currentUser.favoriteStory(currentUser, storyID);
-    }
-    else if (isFavoriteStory(storyID)){
-      currentUser.unfavoriteStory(currentUser, storyID);
-    }
-    $(this).toggleClass("fas far");
-  });
+  //adds event Handler for clicking stars
+  //favorites or unfavorites story accordingly
+  function addFavButtonClick() {
+    $(".fav-button").on("click", function (evt) {
+      let storyID = evt.target.closest("li").id;
+
+      if (!isFavoriteStory(storyID)) {
+        currentUser.favoriteStory(currentUser, storyID);
+      }
+      else if (isFavoriteStory(storyID)) {
+        currentUser.unfavoriteStory(currentUser, storyID);
+      }
+
+      //change icon
+      $(this).toggleClass("fas far");
+    });
+  }
 
   /**
    * Event handler for Navigation to Homepage
@@ -195,16 +200,32 @@ $(async function () {
     for (let story of storyList.stories) {
       const result = generateStoryHTML(story);
       //if story is favorited, fill in star
-      if (isFavoriteStory(story.storyId)){
+      if (isFavoriteStory(story.storyId)) {
         $(result).find("i").toggleClass("fas far");
       }
 
       $allStoriesList.append(result);
     }
+    addFavButtonClick();
   }
 
+  //Accesses local current user favorites to replace $allStoriesList
+  function generateFavStories() {
+    $allStoriesList.empty()
+    for (let story of currentUser.favorites) {
+      let storyHTML = generateStoryHTML(story);
+
+      //fills in stars
+      $(storyHTML).find("i").toggleClass("fas far");
+
+      $allStoriesList.append(storyHTML);
+    }
+    addFavButtonClick();
+  }
+
+
   //helper function for generateStories, returns true if input matches ID in currentUser.favorites
-  function isFavoriteStory(storyID){
+  function isFavoriteStory(storyID) {
     let favoriteIDs = [];
     let favoriteStories = currentUser.favorites;
     for (let story of favoriteStories) {
