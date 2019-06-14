@@ -48,6 +48,8 @@ class StoryList {
       token: user.loginToken,
       story: newStory
     });
+
+    //update local user owned stories
     user.ownStories.push(response.data.story);
     return response.data;
   }
@@ -69,7 +71,7 @@ class User {
     // these are all set to defaults, not passed in by the constructor
     this.loginToken = "";
 
-    //array of favorite story IDs
+    //array of favorite story objects
     this.favorites = [];
     this.ownStories = [];
   }
@@ -188,7 +190,7 @@ class User {
       }
     });
 
-    //sync local stories to server by deleting story
+    //sync local stories to server by deleting story from user favorites and own stories
     let deleteOwnStoriesIndex = this.ownStories.findIndex(story => story.storyId === response.data.story.storyId)
     this.ownStories.splice(deleteOwnStoriesIndex, 1);
 

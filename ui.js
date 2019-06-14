@@ -104,16 +104,17 @@ $(async function () {
     let newStoryObject = { author, title, url };
 
     const newStory = await storyList.addStory(currentUser, newStoryObject);
-    // Reset Form and update DOM
-    $("#submit-form").trigger("reset");
-    $submitForm.slideToggle();
     let newStoryHTML = generateStoryHTML(newStory.story);
 
     // Adds delete icon to submitted story
     // newStoryHTML.prepend("<i class='fas fa-trash-alt delete-button'></i>");
-    
+
     // Adds story to list
     $allStoriesList.prepend(newStoryHTML);
+
+    // Reset Form and update DOM
+    $("#submit-form").trigger("reset");
+    $submitForm.slideToggle();
   });
 
   //Event Handler for Favorites Button
@@ -237,7 +238,7 @@ $(async function () {
         $(result).find("i").toggleClass("fas far");
       }
 
-      //if story is owned, add trashcan
+      // if story in front page is owned, add delete button 
       // if (isOwnedStory(story.storyId)) {
       //   $(result).prepend("<i class='fas fa-trash-alt delete-button'></i>");
       // }
@@ -247,7 +248,7 @@ $(async function () {
   }
 
   //Returns true if input storyID is contained in user's owned stories
-  function isOwnedStory(storyID){
+  function isOwnedStory(storyID) {
     return currentUser.ownStories.some(story => story.storyId === storyID);
   }
 
@@ -275,8 +276,8 @@ $(async function () {
     for (let story of currentUser.ownStories) {
       let storyHTML = generateStoryHTML(story);
       storyHTML.prepend("<i class='fas fa-trash-alt delete-button'></i>")
-      
-      if(isFavoriteStory(story.storyId)){
+
+      if (isFavoriteStory(story.storyId)) {
         $(storyHTML).find(".fav-button").toggleClass("fas far");
       }
       $allStoriesList.prepend(storyHTML);
