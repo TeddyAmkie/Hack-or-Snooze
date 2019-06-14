@@ -109,7 +109,7 @@ $(async function () {
 
   //Event Handler for Favorites Button
   $navOpenFavorites.on("click", async function(){
-  // hide list of all storioes
+  // hide list of all stories
   // iterate over favorites Array
   // call api to get story objects
   // append stories to list
@@ -195,7 +195,7 @@ $(async function () {
     for (let story of storyList.stories) {
       const result = generateStoryHTML(story);
       //if story is favorited, fill in star
-      if (isFavoriteStory(story)){
+      if (isFavoriteStory(story.storyId)){
         $(result).find("i").toggleClass("fas far");
       }
 
@@ -204,13 +204,14 @@ $(async function () {
   }
 
   //helper function for generateStories, returns true if input matches ID in currentUser.favorites
-  function isFavoriteStory(story){
+  function isFavoriteStory(storyID){
     let favoriteIDs = [];
     let favoriteStories = currentUser.favorites;
     for (let story of favoriteStories) {
       favoriteIDs.push(story.storyId);
     }
-    return favoriteIDs.includes(story.storyId);
+
+    return favoriteIDs.includes(storyID);
   }
   /**
    * A function to render HTML for an individual Story instance
