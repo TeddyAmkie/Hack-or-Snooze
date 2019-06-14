@@ -188,15 +188,16 @@ class User {
       }
     });
 
-    //sync local stories to server by
-    //deleting story returned in response from currentUser.ownStories
-    this.ownStories.splice(
-      this.ownStories.findIndex(function(story) {
-      story.storyId === response.data.story.storyId;
-    }),1);
+    //sync local stories to server by deleting story
+    let deleteOwnStoriesIndex = this.ownStories.findIndex(story => story.storyId === response.data.story.storyId)
+    this.ownStories.splice(deleteOwnStoriesIndex, 1);
+
+    let deleteFavoriteIndex = this.favorites.findIndex(story => story.storyId === response.data.story.storyId)
+    this.favorites.splice(deleteFavoriteIndex, 1);
     return;
   }
 }
+
 
 /**
  * Class to represent a single story.

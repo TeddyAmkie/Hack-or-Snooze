@@ -110,7 +110,8 @@ $(async function () {
     let newStoryHTML = generateStoryHTML(newStory.story);
 
     // Adds delete icon to submitted story
-    newStoryHTML.prepend("<i class='fas fa-trash-alt delete-button'></i>");
+    // newStoryHTML.prepend("<i class='fas fa-trash-alt delete-button'></i>");
+    
     // Adds story to list
     $allStoriesList.prepend(newStoryHTML);
   });
@@ -235,10 +236,11 @@ $(async function () {
       if (isFavoriteStory(story.storyId)) {
         $(result).find("i").toggleClass("fas far");
       }
+
       //if story is owned, add trashcan
-      if (isOwnedStory(story.storyId)) {
-        $(result).prepend("<i class='fas fa-trash-alt delete-button'></i>");
-      }
+      // if (isOwnedStory(story.storyId)) {
+      //   $(result).prepend("<i class='fas fa-trash-alt delete-button'></i>");
+      // }
 
       $allStoriesList.append(result);
     }
@@ -257,10 +259,11 @@ $(async function () {
 
       //change all empty stars to full for favorite stories list
       $(storyHTML).find("i").toggleClass("fas far");
+
       //Adds delete button if user owned story
-      if(isOwnedStory(story.storyId)){
-        storyHTML.prepend("<i class='fas fa-trash-alt delete-button'></i>")
-      }
+      // if(isOwnedStory(story.storyId)){
+      //   storyHTML.prepend("<i class='fas fa-trash-alt delete-button'></i>")
+      // }
 
       $allStoriesList.append(storyHTML);
     }
