@@ -45,9 +45,9 @@ class StoryList {
 
   async addStory(user, newStory) {
     let response = await axios.post(`${BASE_URL}/stories`, {
-        token: user.loginToken,
-        story: newStory
-      });
+      token: user.loginToken,
+      story: newStory
+    });
     return response.data;
   }
 }
@@ -67,6 +67,8 @@ class User {
 
     // these are all set to defaults, not passed in by the constructor
     this.loginToken = "";
+
+    //array of favorite story IDs
     this.favorites = [];
     this.ownStories = [];
   }
@@ -153,6 +155,26 @@ class User {
     existingUser.ownStories = response.data.user.stories.map(s => new Story(s));
     return existingUser;
   }
+
+  //Accepts a story ID and sends post request to add story to user favorites
+  async favoriteStory(user, storyID) {
+    let response = await axios.post(`${BASE_URL}/users/${user.username}/favorites/${storyID}`, {
+      token: user.loginToken,
+    });
+    // console.log("favorites are " + JSON.stringify(user.favorites));
+    console.log(response.data);
+    return response.data;
+  }
+
+  async unfavoriteStory(user, storyID){
+    let response = await axios.delete(`${BASE_URL}/users/${user.username}/favorites/${storyID}`, {
+      token: user.loginToken,
+    });
+    // console.log("favorites are " + JSON.stringify(user.favorites));
+    console.log(response.data);
+    return response.data;
+  };
+
 }
 
 /**

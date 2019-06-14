@@ -9,6 +9,7 @@ $(async function () {
   const $navLogin = $("#nav-login");
   const $navLogOut = $("#nav-logout");
   const $navSubmitStory = $("#nav-submit-story");
+  const $navOpenFavorites = $("#nav-open-favorites")
 
   // global storyList variable
   let storyList = null;
@@ -106,6 +107,26 @@ $(async function () {
     $allStoriesList.prepend(generateStoryHTML(newStory.story));
   });
 
+  //Event Handler for Favorites Button
+  $navOpenFavorites.on("click", async function(){
+  // hide list of all storioes
+  // iterate over favorites Array
+  // call api to get story objects
+  // append stories to list
+  });
+
+  //Event Handler for clicking Stars
+  $(".fav-button").on("click", function(evt){
+    let storyID = evt.target.closest("li").id;
+    if (!isFavoriteStory(storyID)){
+      currentUser.favoriteStory(currentUser, storyID);
+    }
+    else if (isFavoriteStory(storyID)){
+      currentUser.unfavoriteStory(currentUser, storyID);
+    }
+    $(this).toggleClass("fas far");
+  });
+
   /**
    * Event handler for Navigation to Homepage
    */
@@ -173,10 +194,24 @@ $(async function () {
     // loop through all of our stories and generate HTML for them
     for (let story of storyList.stories) {
       const result = generateStoryHTML(story);
+      //if story is favorited, fill in star
+      if (isFavoriteStory(story)){
+        $(result).find("i").toggleClass("fas far");
+      }
+
       $allStoriesList.append(result);
     }
   }
 
+  //helper function for generateStories, returns true if input matches ID in currentUser.favorites
+  function isFavoriteStory(story){
+    let favoriteIDs = [];
+    let favoriteStories = currentUser.favorites;
+    for (let story of favoriteStories) {
+      favoriteIDs.push(story.storyId);
+    }
+    return favoriteIDs.includes(story.storyId);
+  }
   /**
    * A function to render HTML for an individual Story instance
    */
@@ -187,6 +222,7 @@ $(async function () {
     // render story markup
     const storyMarkup = $(`
       <li id="${story.storyId}">
+        <i class="far fa-star fav-button"></i>
         <a class="article-link" href="${story.url}" target="a_blank">
           <strong>${story.title}</strong>
         </a>
@@ -217,6 +253,7 @@ $(async function () {
     $navLogin.hide();
     $navLogOut.show();
     $navSubmitStory.show();
+    $navOpenFavorites.show();
   }
 
   /* simple function to pull the hostname from a URL */
